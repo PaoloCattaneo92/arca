@@ -50,7 +50,7 @@ Basically all the software does is calling first api on first environment, then 
   {
     "type": "GET",
     "params": [ {"filter": "ALL", "page": "false"  }]
-    "url": "{BASE_B}/user" //will automatically add "?filter=ALL&page=false" 
+    "url": "{BASE_B}/user" 
   }
 ]
 }
@@ -58,23 +58,39 @@ Basically all the software does is calling first api on first environment, then 
 ```
 
 ## Arca format
+- Put your variables with *<name> = <value>* format wrapped into a *#define/#enifed* block at the begininning of your script
+- Empty lines are skipped, as long as lines starting with *//* (comments)
+- Every pair of API call to compare starts with "*" and the name of the pair
+- Define the call on first environment (A) with *onA:* followed by the definition. Do the same for *onB:*
+- Definition follow the schema *<type> <url> <body>*, parameters must be inserted directly in url (you can use variables defined with *$<variable name>$*)
+
 ```
 #define
 BASE_A = https://apidns1:7286/api/v2
 BASE_B = https://apidns2:7286/api/v2
 
 TEST_USER_ID = 23
+
+BD_CREATE_USER = {"name":"Paolo","email":"paolo.cattaneo@mymail.com","age":31}
 #enifed
 
+// Comment example
+
 * Get users
-onA: GET {BASE_A}/users
-onB: GET {BASE_B}/user?filter=ALL&page=false
+onA: GET $BASE_A$/users
+onB: GET $BASE_B$/user?filter=ALL&page=false
 
 * Get specific user
-onA: GET {BASE_A}/users/{TEST_USER_ID}
-onB: GET {BASE_B}/user?filter={TEST_USER_ID}
+onA: GET $BASE_A$/users/$TEST_USER_ID$
+onB: GET $BASE_B$/user?filter=$TEST_USER_ID$
 
-* Modify an user 
+*! Create an user
+onA: POST $BASE_A$/users $BD_CREATE_USER$
+onB: POST $BASE_B$/users {"name":"Paolo","email":"paolo.cattaneo@mymail.com","age":31}
+
+* Delete user
+onA: DELETE $BASE_A$/users/52
+onB: DELETE $BASE_B$/user?filter=52
 
 ```
 
