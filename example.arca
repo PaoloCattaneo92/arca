@@ -1,0 +1,30 @@
+#define
+// urls
+BASE_A = https://apidns1:7286/api/v2
+BASE_B = https://apidns2:7286/api/v2
+
+// parameters
+TEST_USER_ID = 23
+
+// bodies
+BD_CREATE_USER = {"name":"Paolo","email":"paolo.cattaneo@mymail.com","age":31}
+#enifed
+
+// Comment example
+
+*Get users
+onA: GET $BASE_A$/users
+onB: GET $BASE_B$/user?filter=ALL&page=false
+
+*Get specific user
+onA: GET $BASE_A$/users/$TEST_USER_ID$
+onB: GET $BASE_B$/user?filter=$TEST_USER_ID$
+
+// ignore this
+// * Create an user
+// onA: POST $BASE_A$/users $BD_CREATE_USER$
+// onB: POST $BASE_B$/users {"name":"Paolo","email":"paolo.cattaneo@mymail.com","age":31}
+
+*Delete user
+onA: DELETE $BASE_A$/users/52
+onB: DELETE $BASE_B$/user?filter=52
